@@ -75,6 +75,10 @@ mustWaitForEdge() {
 	_display "End point ready" $external_ip
 	export endpoint=$external_ip
 
+	# For the moment, use this tip from Joel to get rid of the error with audits
+	# Might need to fine-tune where this is, just needs the greymatter namespace to be created, which is done by operator
+	kubectl create secret generic greymatter-audits --from-literal=elasticsearch_username="" --from-literal=elasticsearch_password="" -n greymatter
+
 	local ip=$(kubectl get service edge -n greymatter --template="{{(index .status.loadBalancer.ingress 0).ip}}")
 	local port=$(kubectl get service edge -n greymatter --template="{{(index .spec.ports 0).port}}")
 
