@@ -15,9 +15,9 @@ config: {
 	// if we're deploying into OpenShift, request extra permissions
 	openshift: bool | *false @tag(openshift,type=bool)
 	// deploy and configure Prometheus for historical metrics in the Dashboard
-	enable_historical_metrics: bool | *true @tag(enable_historical_metrics,type=bool)
+	enable_historical_metrics: bool | *false @tag(enable_historical_metrics,type=bool)
 	// deploy and configure audit pipeline for observability telemetry
-	enable_audits: bool | *true @tag(enable_audits,type=bool)
+	enable_audits: bool | *false @tag(enable_audits,type=bool)
 	// whether to automatically copy the image pull secret to watched namespaces for sidecar injection
 	auto_copy_image_pull_secret: bool | *true @tag(auto_copy_image_pull_secret, type=bool)
 	// namespace the operator will deploy into
@@ -37,7 +37,7 @@ mesh: meshv1.#Mesh & {
 	}
 	spec: {
 		install_namespace: string | *"greymatter"
-		watch_namespaces:  [...string] | *["default", "examples"]
+		watch_namespaces:  [...string] | *["default", "examples", "gmdata"]
 		images: {
 			proxy:       string | *"greymatter.jfrog.io/oci/greymatter-proxy:1.9.1-beta1"
 			catalog:     string | *"greymatter.jfrog.io/oci/greymatter-catalog:3.2.0-beta1"
