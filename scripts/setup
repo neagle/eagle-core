@@ -188,7 +188,7 @@ kubectl create secret generic greymatter-edge-ingress \
  	--from-file=ca.crt=./certs/intermediate.crt \
  	--from-file=server.crt=./certs/localhost.crt \
  	--from-file=server.key=./certs/localhost.key \
-	-n greymatter
+	-n gm-operator
 
 _display "Apply the operator..."
 kubectl apply -f ./generated-manifests/operator.yaml
