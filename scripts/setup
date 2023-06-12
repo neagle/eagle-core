@@ -25,13 +25,29 @@ mustHaveProgram() {
 	fi
 }
 
-mustWaitForDashboard() {
-	echo -n -e "${YELLOW}Waiting for greymatter dashboard to be ready${NC}"
+mustWaitForDashboardPod() {
+	echo -n -e "${YELLOW}Waiting for greymatter dashboard pod to be ready${NC}"
 	while true; do
 		POD=$(kubectl get pods -n greymatter -l greymatter.io/cluster=dashboard -o jsonpath="{.items[0].metadata.name}")
 		STATUS=$(kubectl get pods $POD -n greymatter -o jsonpath="{.status.conditions[?(@.type=='Ready')].status}")
 		if [ "$STATUS" == "True" ]; then
-			echo -e "\nDashboard is ready!"
+			echo -e "\nDashboard pod is ready."
+			break
+		else
+			echo -n -e "${CYAN}.${NC}"
+			sleep 10
+		fi
+	done
+}
+
+mustWaitForDashboardService() {
+	echo -n -e "${YELLOW}Waiting for greymatter dashboard service to be ready${NC}"
+	while true; do
+		# Check if the service is available by trying to curl it
+		# We use the `-s` option for silent mode, `-f` to return non-zero status for server errors (4xx and 5xx)
+		# and `-o /dev/null` to not output the content to the console
+		if curl -s -f -o /dev/null http://localhost:10908; then
+			echo -e "\nDashboard is up!"
 			break
 		else
 			echo -n -e "${CYAN}.${NC}"
@@ -82,7 +98,8 @@ mustWaitForEdge() {
 	local ip=$(kubectl get service edge -n greymatter --template="{{(index .status.loadBalancer.ingress 0).ip}}")
 	local port=$(kubectl get service edge -n greymatter --template="{{(index .spec.ports 0).port}}")
 
-	mustWaitForDashboard
+	mustWaitForDashboardPod
+	mustWaitForDashboardService
 	_display "Dashboard URL: http://localhost:${port}" $GREEN
 }
 
