@@ -184,10 +184,11 @@ kubectl create secret docker-registry greymatter-image-pull \
 # figure out a way to wait on the specific thing we need.
 
 # trying to make error with certs go away
-kubectl create secret generic -n greymatter-edge-ingress \
+kubectl create secret generic greymatter-edge-ingress \
  	--from-file=ca.crt=./certs/intermediate.crt \
  	--from-file=server.crt=./certs/localhost.crt \
- 	--from-file=server.key=./certs/localhost.key
+ 	--from-file=server.key=./certs/localhost.key \
+	-n greymatter
 
 _display "Apply the operator..."
 kubectl apply -f ./generated-manifests/operator.yaml
