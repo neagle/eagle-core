@@ -46,7 +46,7 @@ mustWaitForDashboardService() {
 		# Check if the service is available by trying to curl it
 		# We use the `-s` option for silent mode, `-f` to return non-zero status for server errors (4xx and 5xx)
 		# and `-o /dev/null` to not output the content to the console
-		if curl -s -f -o -k /dev/null https://localhost:10908; then
+		if curl -ksfo /dev/null https://localhost:10908; then
 			echo -e "\nDashboard is up!"
 			break
 		else
