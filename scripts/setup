@@ -197,3 +197,13 @@ kubectl create secret docker-registry greymatter-image-pull \
 _display "Apply the operator..."
 kubectl apply -f ./generated-manifests/operator.yaml
 mustWaitForEdge
+
+# If the environment variable PROJECT_TENANT is defined, then apply the tenant
+if [[ -n "${PROJECT_TENANT}" ]]; then
+	_display "PROJECT_TENANT" $PROJECT_TENANT
+	_display "Apply the tenant..."
+	(
+		cd $PROJECT_TENANT
+		./scripts/setup
+	)
+fi
