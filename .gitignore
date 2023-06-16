@@ -1,3 +1,4 @@
 .envrc
 generated-manifests
 buildkite-agent-*
+.DS_Store

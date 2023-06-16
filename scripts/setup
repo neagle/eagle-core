@@ -8,6 +8,14 @@ _exit() {
 	exit 1
 }
 
+# Delete secrets nicely so that we don't get errors if they don't exist
+_delete_secret() {
+	if kubectl get secret $1 -n $2 &>/dev/null; then
+		_display "Resetting existing secret: $1..."
+		kubectl delete secret $1 -n $2
+	fi
+}
+
 ## Meet the various prerequisites
 prerequisites="true"
 mustBeSet() {
@@ -93,14 +101,8 @@ mustWaitForEdge() {
 
 	# For the moment, use this tip from Joel to get rid of the error with audits
 	# Might need to fine-tune where this is, just needs the greymatter namespace to be created, which is done by operator
+	_delete_secret greymatter-audits greymatter
 	kubectl create secret generic greymatter-audits --from-literal=elasticsearch_username="" --from-literal=elasticsearch_password="" -n greymatter
-
-	# Create the ingress secret
-	kubectl create secret generic greymatter-edge-ingress \
-		--from-file=ca.crt=./certs/intermediate.crt \
-		--from-file=server.crt=./certs/localhost.crt \
-		--from-file=server.key=./certs/localhost.key \
-		-n greymatter
 
 	local ip=$(kubectl get service edge -n greymatter --template="{{(index .status.loadBalancer.ingress 0).ip}}")
 	local port=$(kubectl get service edge -n greymatter --template="{{(index .spec.ports 0).port}}")
@@ -172,12 +174,14 @@ kubectl create namespace gm-operator
 # discard output to stderr
 known_hosts=$(ssh-keyscan github.com 2>/dev/null)
 
+_delete_secret greymatter-core-repo gm-operator
 kubectl create secret generic greymatter-core-repo \
 	--from-file=ssh-private-key=$PRIVATE_KEY \
 	--from-literal=known_hosts="$known_hosts" \
 	-n gm-operator
 
 _display "Create jfrog secret"
+_delete_secret greymatter-image-pull gm-operator
 kubectl create secret docker-registry greymatter-image-pull \
 	--docker-server=$GREYMATTER_REGISTRY \
 	--docker-username=$GREYMATTER_REGISTRY_USERNAME \
