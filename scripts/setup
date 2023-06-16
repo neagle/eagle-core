@@ -109,7 +109,7 @@ mustWaitForEdge() {
 
 	mustWaitForDashboardPod
 	mustWaitForDashboardService
-	_display "Dashboard URL: https://localhost:${port}" $GREEN
+	_display "Dashboard URL: http://localhost:${port}" $GREEN
 }
 
 ## Meet the prerequisites before going in and changing anything
