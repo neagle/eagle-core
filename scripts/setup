@@ -119,6 +119,7 @@ mustBeSet "GREYMATTER_REGISTRY_PASSWORD"
 mustHaveProgram k3d
 mustHaveProgram kubectl
 mustHaveProgram ssh-keyscan
+mustHaveProgram perl
 
 ## Make the new cluster in the target namespace. Avoid 6999 and 443 port conflicts
 if [ "$prerequisites" != "true" ]; then
@@ -139,10 +140,15 @@ _display "Generating manifests..."
 # Remove previous generated manifests
 rm -rf "$(dirname "$0")"/../generated-manifests
 "$(dirname "$0")"/generate-manifests >/dev/null 2>&1
+mv ./generated-manifests ./generated-manifests-templates
+mkdir ./generated-manifests
+cp ./generated-manifests-templates/*.yaml ./generated-manifests
 
 # Add in the git url
 GIT_URL=$(git config --get remote.origin.url | perl -pe 's/[.@]/\\$&/g')
 perl -pi -e "s#git\@github\.com:<your-org>/greymatter-core\.git#${GIT_URL}#g" generated-manifests/*.yaml
+BRANCH=$(git branch --show)
+perl -pi -e "s#  - main#  - ${BRANCH}#g" generated-manifests/*.yaml
 
 # Check if the private key has a passphrase
 if ! ssh-keygen -y -P "" -f "$PRIVATE_KEY" >/dev/null 2>&1; then
