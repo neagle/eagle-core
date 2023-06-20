@@ -119,6 +119,7 @@ mustBeSet "GREYMATTER_REGISTRY_PASSWORD"
 mustHaveProgram k3d
 mustHaveProgram kubectl
 mustHaveProgram ssh-keyscan
+mustHaveProgram ssh-keygen
 mustHaveProgram perl
 
 ## Make the new cluster in the target namespace. Avoid 6999 and 443 port conflicts
@@ -140,9 +141,6 @@ _display "Generating manifests..."
 # Remove previous generated manifests
 rm -rf "$(dirname "$0")"/../generated-manifests
 "$(dirname "$0")"/generate-manifests >/dev/null 2>&1
-mv ./generated-manifests ./generated-manifests-templates
-mkdir ./generated-manifests
-cp ./generated-manifests-templates/*.yaml ./generated-manifests
 
 # Add in the git url
 GIT_URL=$(git config --get remote.origin.url | perl -pe 's/[.@]/\\$&/g')
