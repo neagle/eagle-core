@@ -9,10 +9,9 @@ import (
 config: {
 	// Flags
 	// use Spire-based mTLS (ours or another)
-	spire: bool | *false @tag(spire,type=bool)
+	spire: bool | *true @tag(spire,type=bool)
 	// deploy our own server and agent
 	deploy_spire: bool | *spire @tag(use_spire,type=bool)
-	// if we're deploying into OpenShift, request extra permissions
 	openshift: bool | *false @tag(openshift,type=bool)
 	// deploy and configure Prometheus for historical metrics in the Dashboard
 	enable_historical_metrics: bool | *true @tag(enable_historical_metrics,type=bool)
