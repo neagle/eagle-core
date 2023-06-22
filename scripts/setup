@@ -70,7 +70,7 @@ mustWaitForEdge() {
 
 	# initialize attempt counter
 	attempts=0
-	max_attempts=20
+	max_attempts=100
 
 	# loop until we get an external IP
 	external_ip=""
