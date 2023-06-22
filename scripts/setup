@@ -187,8 +187,8 @@ else
 fi
 kubectl create secret generic server-ca \
 	--from-file=server-ca.crt=../eagle-gmd/certs/gmdata_ca_cert.pem \
-	--from-file=server.crt=cat ../eagle-gmd/certs/gmdata_edge_cert.pem \
-	--from-file=server.key=cat ../eagle-gmd/certs/gmdata_edge_key.pem \
+	--from-file=server.crt=../eagle-gmd/certs/gmdata_edge_cert.pem \
+	--from-file=server.key=../eagle-gmd/certs/gmdata_edge_key.pem \
         -n gm-operator
 
 _delete_secret greymatter-core-repo gm-operator
