@@ -9,7 +9,7 @@ import (
 config: {
 	// Flags
 	// use Spire-based mTLS (ours or another)
-	spire: bool | *true @tag(spire,type=bool)
+	spire: bool | *false @tag(spire,type=bool)
 	// deploy our own server and agent
 	deploy_spire: bool | *spire @tag(use_spire,type=bool)
 	openshift: bool | *false @tag(openshift,type=bool)
