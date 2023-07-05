@@ -9,10 +9,9 @@ import (
 config: {
 	// Flags
 	// use Spire-based mTLS (ours or another)
-	spire: bool | *false @tag(spire,type=bool)
+	spire: bool | *true @tag(spire,type=bool)
 	// deploy our own server and agent
 	deploy_spire: bool | *spire @tag(use_spire,type=bool)
-	// if we're deploying into OpenShift, request extra permissions
 	openshift: bool | *false @tag(openshift,type=bool)
 	// deploy and configure Prometheus for historical metrics in the Dashboard
 	enable_historical_metrics: bool | *true @tag(enable_historical_metrics,type=bool)
@@ -37,7 +36,7 @@ mesh: meshv1.#Mesh & {
 	}
 	spec: {
 		install_namespace: string | *"greymatter"
-		watch_namespaces:  [...string] | *["default", "examples", "gmdata"]
+		watch_namespaces:  [...string] | *["gmdata"]
 		images: {
 			proxy:       string | *"greymatter.jfrog.io/oci/greymatter-proxy:1.9.1-beta1"
 			catalog:     string | *"greymatter.jfrog.io/oci/greymatter-catalog:3.2.0-beta1"
