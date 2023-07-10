@@ -212,7 +212,7 @@ kubectl create secret docker-registry greymatter-image-pull \
 # figure out a way to wait on the specific thing we need.
 
 _display "Apply the operator..."
-kubectl apply -f ./generated-manifests/operator.yaml
+kubectl apply -f ./generated-manifests/operator-spire.yaml
 mustWaitForEdge
 
 # If the environment variable PROJECT_TENANT is defined, then apply the tenant
