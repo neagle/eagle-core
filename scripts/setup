@@ -116,7 +116,7 @@ mustWaitForEdge() {
 mustBeSet "GREYMATTER_REGISTRY"
 mustBeSet "GREYMATTER_REGISTRY_USERNAME"
 mustBeSet "GREYMATTER_REGISTRY_PASSWORD"
-mustHaveProgram k3d
+mustHaveProgram cue
 mustHaveProgram kubectl
 mustHaveProgram ssh-keyscan
 mustHaveProgram ssh-keygen
@@ -165,13 +165,18 @@ fi
 
 _display "CLUSTER CREATE"
 export MY_CLUSTER=gmdata
-k3d cluster delete $MY_CLUSTER
-k3d cluster create $MY_CLUSTER --agents 2 --api-port 6999 --port 443:443@loadbalancer --port 10908:10908@loadbalancer --port 10809:10809@loadbalancer
-_display "CLUSTER kubeconfig START"
-sleep 5 # is there something we can wait on?
-export KUBECONFIG="$(k3d kubeconfig write $MY_CLUSTER)"
-_display "CLUSTER kubeconfig STOP"
-kubectl config use-context k3d-$MY_CLUSTER
+
+if  ! [ -x "$(command -v $p)" ]; then
+  k3d cluster delete $MY_CLUSTER
+  k3d cluster create $MY_CLUSTER --agents 2 --api-port 6999 --port 443:443@loadbalancer --port 10908:10908@loadbalancer --port 10809:10809@loadbalancer
+  _display "CLUSTER kubeconfig START"
+  sleep 5 # is there something we can wait on?
+  export KUBECONFIG="$(k3d kubeconfig write $MY_CLUSTER)"
+  _display "CLUSTER kubeconfig STOP"
+  kubectl config use-context k3d-$MY_CLUSTER
+else
+  _display "${p} must be installed and in the path." $YELLOW
+fi
 
 kubectl create namespace gm-operator
 
