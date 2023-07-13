@@ -166,7 +166,7 @@ fi
 _display "CLUSTER CREATE"
 export MY_CLUSTER=gmdata
 
-if  ! [ -x "$(command -v $p)" ]; then
+if  [ -x "$(command -v k3d)" ]; then
   k3d cluster delete $MY_CLUSTER
   k3d cluster create $MY_CLUSTER --agents 2 --api-port 6999 --port 443:443@loadbalancer --port 10908:10908@loadbalancer --port 10809:10809@loadbalancer
   _display "CLUSTER kubeconfig START"
